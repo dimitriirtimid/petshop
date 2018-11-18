@@ -13,8 +13,8 @@ public class SmokefreeConnectionProvider implements ConnectionProvider {
 
     public SmokefreeConnectionProvider()    {
         dataSource = new MysqlDataSource();
-        dataSource.setUser("root");
-        dataSource.setPassword("lm");
+        dataSource.setUser("smokefree");
+        dataSource.setPassword("rokenisslecht");
         dataSource.setURL("jdbc:mysql://localhost:3306/axon");
     }
     @Override
