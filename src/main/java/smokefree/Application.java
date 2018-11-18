@@ -11,13 +11,19 @@ import javax.inject.Inject;
 import javax.sql.DataSource;
 
 public class Application {
+
+    public static String hostname = "localhost";
+
     @Bean
     public InitiativeProjection initiativeProjection() {
         return new InitiativeProjection();
     }
 
 
+
     public static void main(String[] args) {
+        if (args.length > 0)
+            hostname = args[0];
         Micronaut.run(Application.class);
     }
 }

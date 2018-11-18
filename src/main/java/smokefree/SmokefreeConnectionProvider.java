@@ -15,7 +15,8 @@ public class SmokefreeConnectionProvider implements ConnectionProvider {
         dataSource = new MysqlDataSource();
         dataSource.setUser("smokefree");
         dataSource.setPassword("rokenisslecht");
-        dataSource.setURL("jdbc:mysql://localhost:3306/axon");
+//        dataSource.setURL("jdbc:mysql://localhost:3306/axon");
+        dataSource.setURL("jdbc:mysql://" + Application.hostname + ":3306/axon");
     }
     @Override
     public Connection getConnection() throws SQLException {
