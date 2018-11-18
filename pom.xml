@@ -137,11 +137,6 @@
             <version>8.0.13</version>
         </dependency>
 
-        <dependency>
-            <groupId>io.micronaut.configuration</groupId>
-            <artifactId>micronaut-jdbc-hikari</artifactId>
-        </dependency>
-
         <!-- Test -->
         <dependency>
             <groupId>io.rest-assured</groupId>

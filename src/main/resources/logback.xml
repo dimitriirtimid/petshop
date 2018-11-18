@@ -19,7 +19,7 @@
     <logger name="graphql" level="info" additivity="false">
         <appender-ref ref="stdout" />
     </logger>
-    <root level="info">
+    <root level="warn">
         <appender-ref ref="stdout" />
     </root>
 </configuration>

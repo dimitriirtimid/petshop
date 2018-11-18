@@ -1,5 +1,6 @@
 package smokefree;
 
+import com.mysql.cj.jdbc.MysqlDataSource;
 import io.micronaut.context.annotation.Bean;
 import io.micronaut.context.annotation.Factory;
 import io.micronaut.context.annotation.Value;
@@ -16,14 +17,23 @@ import org.axonframework.commandhandling.SimpleCommandBus;
 import org.axonframework.commandhandling.distributed.AnnotationRoutingStrategy;
 import org.axonframework.commandhandling.gateway.CommandGateway;
 import org.axonframework.commandhandling.gateway.DefaultCommandGateway;
+import org.axonframework.common.jdbc.ConnectionProvider;
+import org.axonframework.common.jdbc.DataSourceConnectionProvider;
+import org.axonframework.common.transaction.NoTransactionManager;
 import org.axonframework.config.*;
 import org.axonframework.eventhandling.EventBus;
+import org.axonframework.eventsourcing.eventstore.EmbeddedEventStore;
+import org.axonframework.eventsourcing.eventstore.EventStorageEngine;
+import org.axonframework.eventsourcing.eventstore.jdbc.JdbcEventStorageEngine;
+import org.axonframework.eventsourcing.eventstore.jdbc.MySqlEventTableFactory;
 import org.axonframework.queryhandling.*;
 import org.axonframework.serialization.Serializer;
 import org.axonframework.serialization.json.JacksonSerializer;
 import org.axonframework.serialization.upcasting.event.NoOpEventUpcaster;
 import smokefree.domain.Initiative;
 import smokefree.projection.InitiativeProjection;
+
+import javax.sql.DataSource;
 
 @Slf4j
 @Factory
@@ -74,13 +84,26 @@ public class AxonFactory {
 
     @Bean
     public EventBus eventBus(AxonServerConfiguration axonServerConfiguration, AxonServerConnectionManager axonServerConnectionManager, Serializer serializer) {
-        return AxonServerEventStore.builder()
-                .eventSerializer(serializer)
-                .snapshotSerializer(serializer)
-                .configuration(axonServerConfiguration)
-                .platformConnectionManager(axonServerConnectionManager)
-                .upcasterChain(NoOpEventUpcaster.INSTANCE)
+
+        ConnectionProvider connectionProvider = new SmokefreeConnectionProvider();
+        EventStorageEngine eventStorageEngine = JdbcEventStorageEngine.builder()
+                .connectionProvider(connectionProvider)
+                .transactionManager(NoTransactionManager.instance())
                 .build();
+
+//        Enable to generate schema in DB:
+//        ((JdbcEventStorageEngine) eventStorageEngine).createSchema(new MySqlEventTableFactory());
+
+        return EmbeddedEventStore.builder().storageEngine(eventStorageEngine).build();
+//@Bean
+//    public EventBus eventBus(AxonServerConfiguration axonServerConfiguration, AxonServerConnectionManager axonServerConnectionManager, Serializer serializer) {
+//        return AxonServerEventStore.builder()
+//                .eventSerializer(serializer)
+//                .snapshotSerializer(serializer)
+//                .configuration(axonServerConfiguration)
+//                .platformConnectionManager(axonServerConnectionManager)
+//                .upcasterChain(NoOpEventUpcaster.INSTANCE)
+//                .build();
     }
 
     @Bean
